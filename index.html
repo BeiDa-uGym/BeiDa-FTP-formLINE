@@ -110,7 +110,7 @@
       </li>
       <li>
         <label class="km-label-above">生日(必填，Inbody 量測需要)
-          <input id="formUserBirth" class="NotoSansFont" type="text" placeholder="例如: 1996-06-06"/> 
+          <input id="formUserBirth" class="NotoSansFont" type="text" placeholder="例如: 1996-06-06" onchange="validBirthdayInput()"/> 
         </label> 
       </li>      
       <li>
@@ -302,6 +302,8 @@
         return false;
       }
 
+      if (!validBirthdayInput()) return 1;
+      
       paramToSend = "?API=01" +
         "&Name="             + $("#formUserName").val() +
         "&Gender="           + $("#formUserGender").val() +     
@@ -395,6 +397,42 @@
       }    
         return true;
     }    
+    
+    function checkIfAlldigits(inputStr, digits) {
+      if (inputStr.length != digits) return false;
+      
+      for (var i=0; i < inputStr.length; i++) {
+        if ((inputStr[i] > "9") || (inputStr[i] < "0")) {
+          return false;
+        }
+      }  
+      
+      return true;
+    }
+    
+    function validBirthdayInput(){
+      console.log("validBirthdayInput");
+      
+      var wrongFormat = false;
+      var birthDayStr = $("#formUserBirth").val();
+      if (birthDayStr.length < 10) {
+        wrongFormat = true;
+      } else {
+        var birthDayArray = birthDayStr.split("-");
+        if (!checkIfAlldigits(birthDayArray[0], 4)) wrongFormat = true;
+        if (!checkIfAlldigits(birthDayArray[1], 2)) wrongFormat = true;        
+        if (!checkIfAlldigits(birthDayArray[2], 2)) wrongFormat = true;        
+      }
+            
+      console.log(wrongFormat);
+      if (wrongFormat) {
+        alert("生日格式錯誤! 為了能夠提供您正確的運動資料，請輸入正確生日，例如: 1996-06-06");
+        return false;
+      } else {
+        return true;
+      }
+      
+    }
     
     window.app = new kendo.mobile.Application($(document.body), {
       layout: "courseDiv",
